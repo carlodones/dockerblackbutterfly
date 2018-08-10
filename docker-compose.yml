@@ -12,6 +12,7 @@ services:
   
   business:
     build: ./business
+    privileged: true
     ports:
      - "22:22"
     #networks: 

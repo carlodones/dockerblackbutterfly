@@ -37,7 +37,7 @@ services:
     build: ./ssh
     privileged: true
     ports:
-      - "22:22"
+      - "42022:22"
     networks: 
       app_net:
         ipv4_address: 172.16.238.10

@@ -17,10 +17,16 @@ services:
       - web
       - config
       - ssh
+    volumes:
+      - /var/lib/myvolume   
   
   configs:
     build: ./configs
-  
+    volumes:
+      - /var/lib/myvolume    
+    ports:
+      - "8001:5432" 
+
   ssh:
     build: ./ssh
     ports:
@@ -29,6 +35,8 @@ services:
       app_net:
         ipv4_address: 172.16.238.10
         ipv6_address: "2001:3984:3989::10"
+    volumes:
+      - /var/lib/myvolume
     
 volumes:
   mydata:

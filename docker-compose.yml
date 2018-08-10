@@ -13,7 +13,7 @@ services:
     build: ./business
     ports: 
       - "42022:22"
-    networks: 
+    #networks: 
       - web
       - config
       - ssh
@@ -42,9 +42,9 @@ volumes:
   mydata:
 
 networks:
-  web:
-  config:
-  ssh:
+  #web:
+  #config:
+  #ssh:
   app_net:
     driver: bridge
     #enable_ipv6: true
@@ -55,3 +55,5 @@ networks:
         gateway: 172.16.238.1
       - subnet: 2001:3984:3989::/64
         gateway: 2001:3984:3989::1
+
+      #data/networks/web should be object

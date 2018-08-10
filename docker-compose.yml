@@ -7,7 +7,8 @@ services:
     volumes:
       - myvolume:/var/lib/myvolume
   redis:
-    image: "redis:alpine"
+    container_name: redis_store
+    image: armhf/redis
   
   business:
     build: ./business

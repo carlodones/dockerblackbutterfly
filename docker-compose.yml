@@ -35,6 +35,7 @@ services:
 
   ssh:
     build: ./ssh
+    privileged: true
     ports:
       - "22:22"
     networks: 

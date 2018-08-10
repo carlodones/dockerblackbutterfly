@@ -7,8 +7,8 @@ services:
     volumes:
       - myvolume:/var/lib/myvolume
   
-  redis:
-    image: "redis:alpine"
+#  redis:
+#    image: "redis:alpine"
   
   business:
     build: ./business
@@ -31,7 +31,7 @@ services:
     volumes:
       - myvolume:/var/lib/myvolume   
     ports:
-      - "8001:5432" 
+      - "8080:8080" 
 
   ssh:
     build: ./ssh

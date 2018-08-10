@@ -6,9 +6,8 @@ services:
       - "5000:5000"
     volumes:
       - myvolume:/var/lib/myvolume
-  
-#  redis:
-#    image: "redis:alpine"
+  redis:
+    image: "redis:alpine"
   
   business:
     build: ./business

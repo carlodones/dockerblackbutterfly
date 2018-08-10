@@ -5,7 +5,7 @@ services:
     ports:
       - "5000:5000"
     volumes:
-      - /var/lib/myvolume
+      - .:/code
   
   redis:
     image: "redis:alpine"
@@ -23,12 +23,12 @@ services:
         ipv4_address: 172.16.238.10
         ipv6_address: "2001:3984:3989::10"
     volumes:
-      - /var/lib/myvolume   
+      - myvolume:/var/lib/myvolume   
   
   configs:
     build: ./configs
     volumes:
-      - /var/lib/myvolume    
+      - myvolume:/var/lib/myvolume   
     ports:
       - "8001:5432" 
 
@@ -40,11 +40,10 @@ services:
       app_net:
         ipv4_address: 172.16.238.10
         ipv6_address: "2001:3984:3989::10"
-    volumes:
-      - /var/lib/myvolume
-    
+
 volumes:
-  mydata:
+  myvolume:
+    driver: local
 
 networks:
   default:

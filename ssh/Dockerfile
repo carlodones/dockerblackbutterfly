@@ -1,7 +1,6 @@
-FROM resin/raspberrypi3-python:latest
+FROM resin/%%RESIN_MACHINE_NAME%%-debian
 
 RUN apt-get update && apt-get install -yq --no-install-recommends \
-   python3 python sense-hat raspberrypi-bootloader openssh-server dbus python-pip python3-pip && \
     openssh-server && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
@@ -23,3 +22,4 @@ CMD ["./src/start.sh"]
 
 
 #FROM resin/raspberry-pi3-debian:jessie
+#FROM resin/raspberrypi3-python:latest

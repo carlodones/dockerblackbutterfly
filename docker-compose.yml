@@ -11,7 +11,7 @@ services:
   
   business:
     build: ./business
-    ports: 
+    ports:
       - "42022:22"
     #networks: 
       - web

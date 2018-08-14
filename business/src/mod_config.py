@@ -24,7 +24,7 @@ class ConfigManager(object):
                 return True
 
             config_new = json.load(f)
-            #config_new = self.ordered(config_new)
+            config_new = self.ordered(config_new)
             print (config_new)
 
         if (config == config_new):

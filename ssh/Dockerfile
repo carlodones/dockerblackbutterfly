@@ -15,7 +15,7 @@ COPY . ./
 
 ENV INITSYSTEM on
 
-CMD ["start.sh"]
+CMD ["./src/start.sh"]
 
 
 

@@ -6,6 +6,9 @@ if [ "$INITSYSTEM" != "on" ]; then
 fi
 
 echo "This is where your application would start..."
+
+python hello.py
+
 while : ; do
   echo "waiting"
   sleep 60

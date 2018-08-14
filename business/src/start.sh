@@ -7,9 +7,9 @@ fi
 
 echo "This is where your application would start..."
 
-python hello.py
+python /usr/src/app/src/hello.py
 
-while : ; do
-  echo "waiting"
-  sleep 60
-done
+#while : ; do
+#  echo "waiting"
+#  sleep 60
+#done

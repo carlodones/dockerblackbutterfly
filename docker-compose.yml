@@ -31,7 +31,7 @@ services:
     volumes:
       - myvolume:/var/lib/myvolume   
     ports:
-      - "8080:8080" 
+      - "8000:8000" 
 
   ssh:
     build: ./ssh

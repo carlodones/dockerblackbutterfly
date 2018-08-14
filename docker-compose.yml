@@ -61,7 +61,7 @@ networks:
     ipam:
       driver: default
       config:
-      - subnet: 255.255.255.0
-        gateway: 192.168.1.1
+      - subnet: 198.168.1.5/120
+        gateway: 192.168.1.6
       #- subnet: "2001:3984:3989::/64"
       #- gateway: "2001:3984:3989::1"

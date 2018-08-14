@@ -3,7 +3,7 @@ services:
   web:
     build: ./web
     ports:
-      - "5000:5000"
+      - "8080:8080"
     volumes:
       - myvolume:/var/lib/myvolume
   redis:
@@ -21,8 +21,8 @@ services:
     #  - ssh
     networks: 
       app_net:
-        ipv4_address: 172.16.238.10
-        ipv6_address: "2001:3984:3989::10"
+        ipv4_address: 192.168.1.102
+        ipv6_address: "2001:3984:3989::102"
     volumes:
       - myvolume:/var/lib/myvolume   
   
@@ -37,11 +37,11 @@ services:
     build: ./ssh
     privileged: true
     ports:
-      - "42022:22"
+      - "22:22"
     networks: 
       app_net:
-        ipv4_address: 172.16.238.10
-        ipv6_address: "2001:3984:3989::10"
+        ipv4_address: 192.168.1.103
+        ipv6_address: "2001:3984:3989::103"
 
 volumes:
   myvolume:
@@ -61,7 +61,7 @@ networks:
     ipam:
       driver: default
       config:
-      - subnet: 172.16.238.0/24
-        gateway: 172.16.238.1
-      - subnet: "2001:3984:3989::/64"
-        gateway: "2001:3984:3989::1"
+      - subnet: 255.255.255.0
+        gateway: 192.168.1.1
+      #- subnet: "2001:3984:3989::/64"
+      #  gateway: "2001:3984:3989::1"

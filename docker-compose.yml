@@ -37,7 +37,7 @@ services:
     build: ./ssh
     privileged: true
     ports:
-      - "22:22"
+      - "4038:4038"
     networks: 
       app_net:
         ipv4_address: 192.168.1.103
@@ -64,4 +64,4 @@ networks:
       - subnet: 255.255.255.0
         gateway: 192.168.1.1
       #- subnet: "2001:3984:3989::/64"
-      #  gateway: "2001:3984:3989::1"
+      #- gateway: "2001:3984:3989::1"

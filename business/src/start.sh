@@ -8,9 +8,10 @@ fi
 # Default to UTC if no TIMEZONE env variable is set
 
 echo "Setting time zone to ${TIMEZONE=UTC}"
+
 # This only works on Debian-based images
 
-echo "${Europe/London}" > /etc/timezone
+echo "${Europe/Rome}" > /etc/timezone
 dpkg-reconfigure tzdata
 
 

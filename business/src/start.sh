@@ -5,20 +5,10 @@ if [ "$INITSYSTEM" != "on" ]; then
   /usr/sbin/sshd -p 22 &
 fi
 
-# Default to UTC if no TIMEZONE env variable is set
-
-#echo "Setting time zone to ${TIMEZONE=Etc}"
-# This only works on Debian-based images
-#echo "${Europe/Rome}" > /etc/timezone
-#dpkg-reconfigure tzdata
-
+# Set timezone to Europe/Rome
 timedatectl set-timezone Europe/Rome
 
-echo "This is where your application would start..."
-
+# Start python script
 python /usr/src/app/src/hello.py
 
-#while : ; do
-#  echo "waiting"
-#  sleep 60
-#done
+

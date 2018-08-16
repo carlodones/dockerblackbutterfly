@@ -7,13 +7,12 @@ fi
 
 # Default to UTC if no TIMEZONE env variable is set
 
-echo "Setting time zone to ${TIMEZONE=CEST}"
-
+#echo "Setting time zone to ${TIMEZONE=Etc}"
 # This only works on Debian-based images
+#echo "${Europe/Rome}" > /etc/timezone
+#dpkg-reconfigure tzdata
 
-echo "${Europe/Paris}" > /etc/timezone
-dpkg-reconfigure tzdata
-
+timedatectl set-timezone Europe/Rome
 
 echo "This is where your application would start..."
 

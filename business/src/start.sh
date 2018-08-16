@@ -9,6 +9,6 @@ fi
 timedatectl set-timezone Europe/Rome
 
 # Start python script
-python /usr/src/app/src/hello.py
+python /usr/src/app/src/ntp1.py
 
 

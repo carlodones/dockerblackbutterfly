@@ -1,4 +1,7 @@
+# coding=utf-8
 import time
+import mod_log
+import mod_measure_list
 from sense_hat import SenseHat, ACTION_PRESSED, ACTION_HELD, ACTION_RELEASED
 
 # Array dei canali 
@@ -6,8 +9,9 @@ channels = [1, 2]
 
 G = [0, 127, 0]  # Green
 R = [127, 0, 0]  # Red
+X = [0, 0, 0]  # Off
 
-# Segno verde: visualizzato al termine del programma
+# Segno verde: visualizzato all'avvio e al termine del programma
 green_sign = [
 G, G, G, G, G, G, G, G,
 G, G, G, R, R, G, G, G,
@@ -19,103 +23,115 @@ G, G, G, R, R, G, G, G,
 G, G, G, G, G, G, G, G
 ]
 
-exit_flag = (0)
+# Segno verde: visualizzato all'avvio e al termine del programma
+display_off = [
+X, X, X, X, X, X, X, X,
+X, X, X, X, X, X, X, X,
+X, X, X, X, X, X, X, X,
+X, X, X, X, X, X, X, X,
+X, X, X, X, X, X, X, X,
+X, X, X, X, X, X, X, X,
+X, X, X, X, X, X, X, X,
+X, X, X, X, X, X, X, X
+]
+
+exit_flag = False
 calib_temp = None
-sense = None
+
+x = 0
+y = 0
 
 class SenseManager(object):
-    def __init__(self, channel):
-        global sense
-        self.channel = channel
-        sense = SenseHat()
-        self.show_green_sign()
-        pass
+    def __init__(self, log_mgr, channel):
 
+        self.log_mgr = log_mgr
+        self.channel = channel
+        self.sense = SenseHat()
+        self.turn_off_display()
+        self.name = "sense_hat"
+
+        self.log_mgr.info(self.__class__.__name__, "SenseManager initialized", 2)
+
+    # Acquire single measure from single channel
     def read_channel(self):
 
         val = None
+
+        # Get timestamp
+        ts = time.time()
         
-        # Verifico se ho premuto il pulsante di stop
-        sense.stick.direction_middle = self.pushed_middle
-
-        # Lettura dai sensori del SenseHat acquisizione Temperatura, Pressione, Humidity
-        if (self.channel == 1):
-            val = sense.get_temperature()
+        # Acquiring from SenseHat sensors: Temperature, Pressure, Humidity
+        if(self.channel == 1):
+            val = float(self.sense.get_temperature())
+        elif(self.channel == 2):
+            val = float(self.sense.get_pressure())
         else:
-            val = sense.get_pressure()
+            val = float(self.sense.get_humidity())
 
-        # Arrotondamento ad una cifra decimale
-        val = round(val, 2)
+        self.light_up_pixel()
 
-        return val
+        meas_sh = mod_measure_list.Measure(self.channel, val, ts)
 
-    
+        return meas_sh
+
+    def get_name(self):
+        return self.name
+
+    def close(self):
+        self.log_mgr.info(self.__class__.__name__, "SenseManager closed", 2)
+        self.turn_off_display()
+        self.sense.clear()
+        self.channel = None
+
 # ------------------------------------------------------------------------------------------------
 #  METODI DEDICATI PER IL SENSE-HAT
 # ------------------------------------------------------------------------------------------------
 
     # Alla pressione del pulsante del sense-hat il programma termina
-    def pushed_middle(self, event):
-        global exit_flag
-        if event.action == ACTION_PRESSED:
-            print("Button pressed")
-            exit_flag = 1
+    def show_green_sign(self):
+        self.sense.set_pixels(green_sign)
 
     # Alla pressione del pulsante del sense-hat il programma termina
-    def show_green_sign(self):
-        sense.set_pixels(green_sign)
+    def turn_off_display(self):
+        self.sense.set_pixels(display_off)
 
-    # Metdodo per la colorazione del display del sensehat
-    def show_temperature(self, temp_value):
+    def light_up_pixel (self):
 
-        global calib_temp
+        meas_color = []
+        pix = []
 
-        # Calcolo il livello di colore (tra 1 e 255) proporzionale alla temperatura rilevata
-        pixel_light = int( (((temp_value - calib_temp.pmin) / (calib_temp.pmax - calib_temp.pmin)) * 255) // 1)
-        if (pixel_light > 255):
-            pixel_light = 255
-        if (pixel_light < 0):
-            pixel_light = 0
+        if(self.channel == 1):
+            meas_color = [255, 0, 0]
+        elif(self.channel == 2):
+            meas_color = [0, 255, 0]
+        else:
+            meas_color = [0, 0, 255]
 
-        # Creo il codice colore di riferimento:
-        # Blu = freddo; Rosso = caldo
-        X = [pixel_light, 0, 255 - pixel_light]
+        pix = self.next_pixel()
+        self.sense.set_pixel(pix[0], pix[1], meas_color)
 
-        # Matrice "tinta unita"
-        one_level = [
-        X, X, X, X, X, X, X, X,
-        X, X, X, X, X, X, X, X,
-        X, X, X, X, X, X, X, X,
-        X, X, X, X, X, X, X, X,
-        X, X, X, X, X, X, X, X,
-        X, X, X, X, X, X, X, X,
-        X, X, X, X, X, X, X, X,
-        X, X, X, X, X, X, X, X
-        ]
-        
-        # Coloro il display in tinta unita
-        sense.set_pixels(one_level)
+    def next_pixel(self):
 
-    def calibrate(self, sensor, pcycles=5, pmin=0, pmax=100):
+        global X
+        x = 0
+        y = 0
 
-        avg_temp = 0
-        calib = 1
+        pix = []
 
-        # Avvio fase di calibrazione iniziale: la temperatura media risulta
-        # da una media di 5 rilevazioni della temperatura ambiente
-        print("Calibrating Sensor: <" + sensor + ">")
+        while (self.sense.get_pixel(x, y) != X):
 
-        while (calib <= pcycles):
-            avg_temp = avg_temp + sense.get_temperature()
-            print ("Calibration [" + str(calib) + "]: <" + str(avg_temp / calib) + ">")
-            calib = calib + 1
-            time.sleep(1)
+            x = x + 1
 
-        avg_temp = avg_temp / pcycles
-        print ("Avg: <" + str(avg_temp)+ ">")
+            if (x == 8):
+                x = 0
+                y = y + 1
 
-        # Fisso i valori di riferimento del range di temperatura
-        # (+/- 1C rispetto alla temperatura di calibrazione)
-        pmax = avg_temp + 1
-        pmin = avg_temp - 1
-        print ("Min: <" + str(pmin)+ ">; Max: <" +str(pmax)+ ">")
+            if (y == 8):
+                self.turn_off_display()
+                x = 0
+                y = 0
+
+        pix.append(x)
+        pix.append(y)
+
+        return pix

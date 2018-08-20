@@ -23,13 +23,3 @@ print (current_time)
 os.system("service ntp stop")
 os.system("sudo date -s '{0}'".format(current_time))
 os.system("sudo service ntp start")
-
-
-
-
-
-
-#os.system('/etc/init.d/ntpd stop, /usr/sbin/ntpdate -b -s it.pool.ntp.org, /etc/init.d/ntpd start')
-#os.system("sudo ntpdate '{0}'".format(current_time))
-#os.system("sudo timedatectl set-time '{0}'".format(current_time))
-

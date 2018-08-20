@@ -1,33 +1,63 @@
 {
-    "config": { 
-        "version": "1.0"
-    },
-    "device": {
+    "config_update": [
+        { "enabled": "true", "delay_ms": "30000", "commands_path": "/usr/src/app/cmd/", "action": "RESTART" }
+    ],
+    "device": [
+        {
         "device_name": "DAB_0001",
         "device_ip": "192.168.1.104"
-    },
-    "channels": [
-        { "enabled": "true", "type": "analogue", "send": "false", "id": "TMP_0001", "name": "temperatura", "channel": "1", "samp_time_ms":  "500", "upper_limit": "40", "lower_limit": "-10" },
-        { "enabled": "true", "type": "analogue", "send": "false", "id": "PRS_0001", "name": "pressione", "channel": "2", "samp_time_ms": "1000", "upper_limit": "1200", "lower_limit": "800" },
-        { "enabled": "true", "type": "average", "send": "true", "id": "TMP_AVG_0001", "name": "media minuto temperatura", "channel": "1", "samp_time_ms": "60000", "upper_limit": "40", "lower_limit": "-10" },
-        { "enabled": "true", "type": "average", "send": "true", "id": "PRS_AVG_0001", "name": "media minuto pressione",  "channel": "2", "samp_time_ms": "60000", "upper_limit": "1200", "lower_limit": "800" }
+        }
     ],
-    "MQTT": {
-        "port": "502",
-        "broker_url": "test1",
-        "client_id": "DAB_0001",
-        "username": "username",
-        "password": "password",
-        "send_period_ms": "60000"
-    },
-    "MQTT_keys": {
+    "channels": [
+        { "enabled": "false", "channel_type": "sense_hat", "send": "false", "channel_id": "TMP_0001", "name": "temperature", "channel": "1", "source_channel": "1", "port" : "NONE", "baudrate" : "0", "parity" : "None", "bytesize" : "0", "stopbits" : "0", "delay_ms": "500", "upper_limit": "40", "lower_limit": "-10" },
+        { "enabled": "false", "channel_type": "sense_hat", "send": "false", "channel_id": "PRS_0001", "name": "pressure", "channel": "2", "source_channel": "2", "port" : "NONE", "baudrate" : "0", "parity" : "None", "bytesize" : "0", "stopbits" : "0", "delay_ms": "1500", "upper_limit": "1200", "lower_limit": "800" },
+        { "enabled": "false", "channel_type": "sense_hat", "send": "false", "channel_id": "HUM_0001", "name": "humidity", "channel": "3", "source_channel": "3", "port" : "NONE", "baudrate" : "0", "parity" : "None", "bytesize" : "0", "stopbits" : "0", "delay_ms": "2000", "upper_limit": "1200", "lower_limit": "800" },
+        { "enabled": "true", "channel_type": "average", "send": "true", "channel_id": "TMP_AVG_0001", "name": "temp. min. avg", "channel": "4", "source_channel": "1", "port" : "NONE", "baudrate" : "0", "parity" : "None", "bytesize" : "0", "stopbits" : "0", "delay_ms": "60000", "upper_limit": "40", "lower_limit": "-10" },
+        { "enabled": "true", "channel_type": "average", "send": "true", "channel_id": "PRS_AVG_0001", "name": "prs. min. avg", "channel": "5", "source_channel": "2", "port" : "NONE", "baudrate" : "0", "parity" : "None", "bytesize" : "0", "stopbits" : "0", "delay_ms": "60000", "upper_limit": "1200", "lower_limit": "800" },
+        { "enabled": "true", "channel_type": "average", "send": "true", "channel_id": "HUM_AVG_0001", "name": "hum. min. avg", "channel": "6", "source_channel": "3", "port" : "NONE", "baudrate" : "0", "parity" : "None", "bytesize" : "0", "stopbits" : "0", "delay_ms": "60000", "upper_limit": "1200", "lower_limit": "800" },
+        { "enabled": "true", "channel_type": "seneca", "send": "true", "channel_id": "SC_0001", "name": "seneca1", "channel": "7", "source_channel": "3", "port" : "/dev/ttyUSB0", "baudrate" : "57600", "parity" : "None", "bytesize" : "8", "stopbits" : "1", "delay_ms": "60000", "upper_limit": "-50", "lower_limit": "150" },
+        { "enabled": "true", "channel_type": "seneca", "send": "true", "channel_id": "SC_0002", "name": "seneca2", "channel": "8", "source_channel": "4", "port" : "/dev/ttyUSB0", "baudrate" : "57600", "parity" : "None", "bytesize" : "8", "stopbits" : "1", "delay_ms": "60000", "upper_limit": "-50", "lower_limit": "150" },
+        { "enabled": "true", "channel_type": "seneca", "send": "true", "channel_id": "SC_0003", "name": "seneca3", "channel": "9", "source_channel": "5", "port" : "/dev/ttyUSB0", "baudrate" : "57600", "parity" : "None", "bytesize" : "8", "stopbits" : "1", "delay_ms": "60000", "upper_limit": "-50", "lower_limit": "150" },
+        { "enabled": "true", "channel_type": "seneca", "send": "true", "channel_id": "SC_0004", "name": "seneca4", "channel": "10", "source_channel": "6", "port" : "/dev/ttyUSB0", "baudrate" : "57600", "parity" : "None", "bytesize" : "8", "stopbits" : "1", "delay_ms": "60000", "upper_limit": "-50", "lower_limit": "150" },
+        { "enabled": "true", "channel_type": "seneca", "send": "true", "channel_id": "SC_0005", "name": "seneca5", "channel": "11", "source_channel": "7", "port" : "/dev/ttyUSB0", "baudrate" : "57600", "parity" : "None", "bytesize" : "8", "stopbits" : "1", "delay_ms": "60000", "upper_limit": "-50", "lower_limit": "150" },
+        { "enabled": "true", "channel_type": "seneca", "send": "true", "channel_id": "SC_0006", "name": "seneca6", "channel": "12", "source_channel": "8", "port" : "/dev/ttyUSB0", "baudrate" : "57600", "parity" : "None", "bytesize" : "8", "stopbits" : "1", "delay_ms": "60000", "upper_limit": "-50", "lower_limit": "150" },
+        { "enabled": "true", "channel_type": "seneca", "send": "true", "channel_id": "SC_0007", "name": "seneca7", "channel": "13", "source_channel": "9", "port" : "/dev/ttyUSB0", "baudrate" : "57600", "parity" : "None", "bytesize" : "8", "stopbits" : "1", "delay_ms": "60000", "upper_limit": "-50", "lower_limit": "150" },
+        { "enabled": "true", "channel_type": "seneca", "send": "true", "channel_id": "SC_0008", "name": "seneca8", "channel": "14", "source_channel": "10", "port" : "/dev/ttyUSB0", "baudrate" : "57600", "parity" : "NONE", "bytesize" : "8", "stopbits" : "1", "delay_ms": "60000", "upper_limit": "-50", "lower_limit": "150" }
+    ],
+    "JSON_collections": [
+        { "enabled": "true", "file_topic": "jsonTMP_AVG_0001", "channel": "4", "delay_ms": "60000", "json_file_path": "/usr/src/app/MQTT/" },
+        { "enabled": "true", "file_topic": "jsonPRS_AVG_0001", "channel": "5", "delay_ms": "60000", "json_file_path": "/usr/src/app/MQTT/" },
+        { "enabled": "true", "file_topic": "jsonHUM_AVG_0001", "channel": "6", "delay_ms": "60000", "json_file_path": "/usr/src/app/MQTT/" }
+    ],
+    "MQTT_flows": [
+        { "enabled": "false", "broker_ip_port": "502", "broker_ip_address": "localhost", "subscription_topic": "de/DAB_0001/@DATA", "delay_ms": "6000", "direction": "out", "msg_file_path": "/usr/src/app/MQTT/" },
+        { "enabled": "false", "broker_ip_port": "502", "broker_ip_address": "localhost", "subscription_topic": "de/DAB_0001/@COLLECTION", "delay_ms": "60000", "direction": "out", "msg_file_path": "/usr/src/app/MQTT/" },
+        { "enabled": "false", "broker_ip_port": "502", "broker_ip_address": "localhost", "subscription_topic": "de/DAB_0001/@DATA", "delay_ms": "60000", "direction": "in", "msg_file_path": "/usr/src/app/MQTT/" }
+    ],
+    "MQTT_keys": [
+        {
         "payload": "payload",
         "address": "address",
         "qos": "qos",
         "values": "values",
         "timestamp": "timestampDevice"
-    },
-    "log": { 
-        "log_path": "/usr/src/app/log/DAB_0001.log"
-    }
+        }
+    ],
+    "log": [
+        { 
+        "log_path": "/usr/src/app/log/",
+        "log_level": "1"
+        }
+    ],
+    "ntp_service": [
+        { "enabled": "true", "service_url": "http://time.google.com/", "delay_ms": "600000" }
+    ],
+    "commands": [
+        {
+        "delay_ms": "5000",
+        "expire_timeout_ms": "1000",
+        "expire_count": "10",
+        "commands_path": "/usr/src/app/cmd/"
+        }
+    ]
 }

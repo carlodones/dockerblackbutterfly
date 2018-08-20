@@ -6,9 +6,8 @@ if [ "$INITSYSTEM" != "on" ]; then
 fi
 
 # Set timezone to Europe/Rome
-#timedatectl set-timezone Europe/Rome
+timedatectl set-timezone Europe/Rome
 
-# Start python script
-python /usr/src/app/src/ntp1.py
+echo "Starting EnePro ..."
 
-
+python /usr/src/app/src/main.py

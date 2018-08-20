@@ -30,7 +30,3 @@ CMD ["./src/start.sh"]
 #   pip install paho-mqtt && \
 #   apt-get upgrade && \
 #   apt-get clean && rm -rf /var/lib/apt/lists/*
-
-
-
-

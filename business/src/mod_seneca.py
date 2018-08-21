@@ -35,7 +35,7 @@ class SenecaManager(object):
         #self.seneca = Seneca
         self.name = "seneca"
         self.port_id = port_id
-        self.modbus_addr = modbus_addr
+        self.modbus_addr = int(modbus_addr)
         self.instrument = minimalmodbus.Instrument(self.port_id, self.modbus_addr)
         self.log_mgr.info(self.__class__.__name__, "SenecaManager initialized", 2)
 

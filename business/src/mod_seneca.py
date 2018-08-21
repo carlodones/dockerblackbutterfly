@@ -53,7 +53,7 @@ class SenecaManager(object):
         #],
         try:
             # Acquiring from Seneca channels sensors: 
-            val = (self.instrument.read_register(self.source_channel, 0, 3, True)
+            val = float(self.instrument.read_register(self.source_channel, 0, 3, True))
             qos = "good"
         
         except:

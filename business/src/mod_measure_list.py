@@ -42,14 +42,21 @@ class MeasureList(object):
     def json_dictionary(self, channel, cfg_mgr):
         dic_list = []
         #key_dict = cfg_mgr.get_config_item_list("MQTT_keys")[0] 
-        key_dict = cfg_mgr.get_config_item_list("MQTT_keys")  
+        key_dict = cfg_mgr.get_config_item_list("MQTT_keys") 
+        print (key_dict) 
         for meas in self.plist:
             elem_dic = {}
             if ((meas.channel == channel) & (meas.json == False)):
-                elem_dic[key_dict.get('payload')] = meas.value
-                elem_dic[key_dict.get('address')] = meas.channel
-                elem_dic[key_dict.get('timestamp')] = meas.timestamp
-                elem_dic[key_dict.get('qos')] = meas.qos
+#                elem_dic[key_dict.get('payload')] = meas.value
+#                elem_dic[key_dict.get('address')] = meas.channel
+#                elem_dic[key_dict.get('timestamp')] = meas.timestamp
+#                elem_dic[key_dict.get('qos')] = meas.qos
+
+                elem_dic['payload'] = meas.value
+                elem_dic['address'] = meas.channel
+                elem_dic['timestamp'] = meas.timestamp
+                elem_dic['qos'] = meas.qos
+
                 dic_list.append(elem_dic)
                 meas.json = True
         return dic_list

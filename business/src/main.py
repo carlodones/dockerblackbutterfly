@@ -138,7 +138,7 @@ class ServiceClass(object):
                 "file_topic:<" + str(file_topic) + ">; " + \
                 "delay:<" + str(delay) + ">")
 
-            json_mgr = mod_json.Collection(delay, self.log_mgr, channel, file_topic, json_file_path)
+            json_mgr = mod_json.Collection(self.log_mgr, delay, channel, file_topic, json_file_path)
 
             try: # Create an instance of the MQTT management thread
                 thd_mgr = mod_thread.ThreadManager(self.log_mgr, "JSON")

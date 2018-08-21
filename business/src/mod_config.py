@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import sys
 import os
 import json
@@ -186,9 +187,7 @@ class ConfigManager(object):
 
     def get_config_item_list(self, config_key):
         #if (self.config.has_key(config_key) == False):
-        #if category_menus.has_key(candidate):
         if config_key in self.config == False:
-        #if candidate in category_menus:
             raise mod_config_validation.ConfigurationException( \
                 "Configuration Error - " + \
                 "missing key:<"+ str(config_key) +">")

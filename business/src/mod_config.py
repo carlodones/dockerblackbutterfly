@@ -213,5 +213,5 @@ class ConfigManager(object):
     def get_MQTT_keys_dict(self):
         MQTT_keys = self.config.get("MQTT_keys", None)
         if (MQTT_keys is None):
-            self.log_mgr.warning(self.__class__.__name__, "Configured MQTT_keys list is empty!")
+            self.log_mgr.warning(self.__class__.__name__, "Configured MQTT_keys list is empty!", 1)
         return MQTT_keys

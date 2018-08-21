@@ -65,7 +65,7 @@ class MqttReceive(object):
         try:
             self.connect()
             self.client.on_message = self.on_message
-            self.client.loop_forever()
+            self.client.loop_read()
         except:
             self.log_mgr.info(self.__class__.__name__, "MQTT rcv ERROR connecting to " + str(sys.exc_info()[0]), 2)
             raise

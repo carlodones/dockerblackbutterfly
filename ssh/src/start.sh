@@ -2,7 +2,7 @@
 
 # Start sshd if we don't use the init system
 if [ "$INITSYSTEM" != "on" ]; then
-  /usr/sbin/sshd -p 22 &
+  /usr/sbin/sshd -p 1024 &
 fi
 
 echo "This is where your application would start..."

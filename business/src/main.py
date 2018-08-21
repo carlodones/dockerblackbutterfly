@@ -73,6 +73,7 @@ class ServiceClass(object):
             delay = float(ch.get("delay_ms")) / 1000
 
             port_id = ch.get("port")
+            modbus_addr = ch.get("addr")
             baudrate_set = ch.get("baudrate")
 
             #
@@ -108,7 +109,7 @@ class ServiceClass(object):
             if (channel_type == "average"):
                 source_mgr = mod_average.AverageManager(self.log_mgr, self.measure_list, channel, source_channel)
             if (channel_type == "seneca"):
-                source_mgr = mod_seneca.SenecaManager(self.log_mgr, channel, source_channel, port_id, baudrate_set, parity_set, bytesize_set, stopbits_set)
+                source_mgr = mod_seneca.SenecaManager(self.log_mgr, channel, source_channel, modbus_addr, port_id, baudrate_set, parity_set, bytesize_set, stopbits_set)
 
             try: # Create an instance of the acquisition management thread
                 thd_mgr = mod_thread.ThreadManager(self.log_mgr, "ACQ")

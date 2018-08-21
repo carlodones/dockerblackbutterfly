@@ -18,8 +18,12 @@ class Collection(object):
     # Adds a new measure to the list
     def create_collection(self):
         jl_measure_list=mod_measure_list.MeasureList()
-        json_list = jl_measure_list.list_by_channel(self.channel)
-        print (json_list)
+        
+        cfg_mgr = mod_config.ConfigManager(self.log_mgr)
+        json_list = jl_measure_list.json_dictionary(self.channel,cfg_mgr)
+        
+        #json_list = jl_measure_list.list_by_channel(self.channel)
+        #print (json_list)
 
         with open(self.jf_path+self.jf_topic+'.json',"w") as f:
             json.dump(json_list, f)

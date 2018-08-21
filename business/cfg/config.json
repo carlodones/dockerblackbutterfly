@@ -1,6 +1,6 @@
 {
     "config_update": [
-        { "enabled": "true", "delay_ms": "30000", "commands_path": "/usr/src/app/cmd/", "action": "RESTART" }
+        { "enabled": "true", "delay_ms": "60000", "commands_path": "/usr/src/app/cmd/", "action": "RESTART" }
     ],
     "device": [
         {
@@ -43,14 +43,28 @@
         "timestamp": "timestampDevice"
         }
     ],
+    "MQTT_measure_qos": [
+        { "1": "good", "-1": "bad" }
+    ],
+    "MQTT_channel_qos": [
+        { "1": "DIAGN_STATUS_ONLINE", "0": "DIAGN_STATUS_OFFLINE", "-1": "DIAGN_STATUS_ONLINE_ANOMALY" }
+    ],
+    "MQTT_diagnostic": [
+        { 
+        "address": "address",
+        "qos": "qos",
+        "payload": "payload",
+        "timestamp": "timestampDevice"
+        }
+    ],
     "log": [
         { 
-        "log_path": "/usr/src/app/log/",
-        "log_level": "1"
+        "backup_log_path": "/usr/src/app/log/backup_log_%Y%m%d-%H%M%S.log",
+        "log_level": "2"
         }
     ],
     "ntp_service": [
-        { "enabled": "true", "service_url": "http://time.google.com/", "delay_ms": "600000" }
+        { "enabled": "true", "service_url": "pool.ntp.org", "delay_ms": "86400000" }
     ],
     "commands": [
         {

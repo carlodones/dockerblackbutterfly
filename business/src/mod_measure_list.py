@@ -3,7 +3,7 @@ import mod_config
 
 # Single measure storage
 class Measure(object):
-    def __init__(self, channel, value, timestamp, count=1):
+    def __init__(self, channel, value, qos, timestamp, count=1):
         self.channel = channel          # Measure channel
         self.value = value              # Measure value
         self.timestamp = timestamp      # Measure timestamp
@@ -11,6 +11,7 @@ class Measure(object):
         self.average = False            # Flag: measure used to calculate average
         self.json = False               # Flag: measure used to generate JSON string
         self.count = count              # Number of measure used to calculate the average
+        self.qos = qos
 
 # Measure list management class
 class MeasureList(object):
@@ -20,8 +21,8 @@ class MeasureList(object):
     plist = []
 
     # Creates a new measure and adds it to the list
-    def add_details(self, channel, value, timestamp):
-        meas = Measure(channel, value, timestamp)
+    def add_details(self, channel, value, qos, timestamp):
+        meas = Measure(channel, value, qos, timestamp)
         self.plist.append(meas)
 
     # Adds a new measure to the list
@@ -38,16 +39,16 @@ class MeasureList(object):
         return part_list
 
     # Returns dictionary for single measure
-    def json_dictionary(self, cfg_mgr):
+    def json_dictionary(self, channel, cfg_mgr):
         dic_list = []
         key_dict = cfg_mgr.get_MQTT_keys_dict()
         for meas in self.plist:
             elem_dic = {}
-            if (meas.json == False):
+            if ((meas.channel == channel) & (meas.json == False)):
                 elem_dic[key_dict.get('payload')] = meas.value
                 elem_dic[key_dict.get('address')] = meas.channel
                 elem_dic[key_dict.get('timestamp')] = meas.timestamp
-                elem_dic[key_dict.get('qos')] = "good"
+                elem_dic[key_dict.get('qos')] = meas.qos
                 dic_list.append(elem_dic)
                 meas.json = True
         return dic_list

@@ -53,11 +53,11 @@ class SenecaManager(object):
         #],
         try:
             # Acquiring from Seneca channels sensors: 
-            val = float(self.instrument.read_register(self.source_channel, 0, 3, True))
+            val = (self.instrument.read_register(self.source_channel, 0, 3, True)
             qos = "good"
         
         except:
-            self.log_mgr.info(self.__class__.__name__, "ERROR getting data from device <" + self.modbus_addr + ">" + str(sys.exc_info()[0]), 1)
+            self.log_mgr.info(self.__class__.__name__, "ERROR getting data from device <" + str(self.modbus_addr) + ">" + str(sys.exc_info()[0]), 1)
             val = -999
             qos = "bad"
 

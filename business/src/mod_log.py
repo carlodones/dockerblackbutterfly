@@ -30,7 +30,7 @@ class LogManager(object):
             self.info(self.__class__.__name__, "logger open", 1)
 
         except:
-            print "Log set-up error:", sys.exc_info()[0]
+            print ("Log set-up error:", sys.exc_info()[0])
             raise
 
     # Set log path and log level

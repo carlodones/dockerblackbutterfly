@@ -53,7 +53,7 @@ class SenecaManager(object):
         #],
         try:
             # Acquiring from Seneca channels sensors: 
-            val = float(self.instrument.read_register(self.channel, 0, 3, True))
+            val = float(self.instrument.read_register(self.source_channel, 0, 3, True))
             qos = "good"
         
         except:
@@ -61,7 +61,7 @@ class SenecaManager(object):
             val = -999
             qos = "bad"
 
-#
+        print (val)
         meas_sh = mod_measure_list.Measure(self.channel, val, qos, ts)
 
         return meas_sh

@@ -43,7 +43,6 @@ class MeasureList(object):
         dic_list = []
         #key_dict = cfg_mgr.get_config_item_list("MQTT_keys")[0] 
         key_dict = cfg_mgr.get_config_item_list("MQTT_keys") 
-        print (key_dict) 
         for meas in self.plist:
             elem_dic = {}
             if ((meas.channel == channel) & (meas.json == False)):

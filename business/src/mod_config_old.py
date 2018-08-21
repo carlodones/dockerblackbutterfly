@@ -9,25 +9,6 @@ from pprint import pprint
 config_file = "/usr/src/app/cfg/config.json"
 config_check = "/usr/src/app/log/dict_%Y%m%d-%H%M%S.json"
 
-class ConfigDefaults(object):
-    def __init__(self):
-        self.exit = [{"thread_stop_timeout_ms": "10000"}]
-        pass
-
-    def get_exit(self):
-        return self.exit
-
-class ValidateConfig(object):
-    def __init__(self):
-        pass
-    
-    def is_number(self, check_string):
-        try:
-            float(check_string)
-            return True
-        except ValueError:
-            return False
-
 class ConfigManager(object):
     def __init__(self, log_mgr):
         self.log_mgr = log_mgr
@@ -61,7 +42,7 @@ class ConfigManager(object):
             self.log_mgr.info(self.__class__.__name__, "Configuration validated", 1)
 
         except Exception as exc: # Validation error
-            self.log_mgr.fatal(self.__class__.__name__, "Configuration load error:<" + str(sys.exc_info()[0]) + ">", 1)
+            self.log_mgr.fatal(self.__class__.__name__, "Configuration load error:<" + str(exc.message) + ">", 1)
             return False if self.config is None else True
 
         # If confguration is empty, ok
@@ -209,9 +190,3 @@ class ConfigManager(object):
                 "configuration " + str(config_key)+ " list is empty!")
 
         return elem_list
-
-    def get_MQTT_keys_dict(self):
-        MQTT_keys = self.config.get("MQTT_keys", None)
-        if (MQTT_keys is None):
-            self.log_mgr.warning(self.__class__.__name__, "Configured MQTT_keys list is empty!")
-        return MQTT_keys

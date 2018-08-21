@@ -41,7 +41,7 @@ class MeasureList(object):
     # Returns dictionary for single measure
     def json_dictionary(self, channel, cfg_mgr):
         dic_list = []
-        key_dict = cfg_mgr.get_config_item_list("MQTT_keys")   
+        key_dict = cfg_mgr.get_config_item_list("MQTT_keys")[0]   
         for meas in self.plist:
             elem_dic = {}
             if ((meas.channel == channel) & (meas.json == False)):

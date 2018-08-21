@@ -20,7 +20,12 @@ class Collection(object):
         jl_measure_list=mod_measure_list.MeasureList()
         
         cfg_mgr = mod_config.ConfigManager(self.log_mgr)
+        if (cfg_mgr.load_config() == False):
+            exit(0)
+
+        #cfg_mgr = mod_config.ConfigManager(self.log_mgr)
         json_list = jl_measure_list.json_dictionary(self.channel,cfg_mgr)
+
         
         #json_list = jl_measure_list.list_by_channel(self.channel)
         #print (json_list)

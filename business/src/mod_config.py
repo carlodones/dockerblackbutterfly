@@ -186,8 +186,8 @@ class ConfigManager(object):
             self.log_mgr.fatal("Error processing objects - old_item:<" + str(old_item) + ">; new_item:<" + str(new_item) + ">", 1)
 
     def get_config_item_list(self, config_key):
-        #if (self.config.has_key(config_key) == False):
-        if config_key in self.config == False:
+        if (self.config.has_key(config_key) == False):
+        #if config_key in self.config == False:
             raise mod_config_validation.ConfigurationException( \
                 "Configuration Error - " + \
                 "missing key:<"+ str(config_key) +">")

@@ -27,7 +27,8 @@
     "JSON_collections": [
         { "enabled": "true", "file_topic": "jsonTMP_AVG_0001", "channel": "4", "delay_ms": "60000", "json_file_path": "/usr/src/app/MQTT/" },
         { "enabled": "true", "file_topic": "jsonPRS_AVG_0001", "channel": "5", "delay_ms": "60000", "json_file_path": "/usr/src/app/MQTT/" },
-        { "enabled": "true", "file_topic": "jsonHUM_AVG_0001", "channel": "6", "delay_ms": "60000", "json_file_path": "/usr/src/app/MQTT/" }
+        { "enabled": "true", "file_topic": "jsonHUM_AVG_0001", "channel": "6", "delay_ms": "60000", "json_file_path": "/usr/src/app/MQTT/" },
+        { "enabled": "true", "file_topic": "jsonTMP_0001", "channel": "7", "delay_ms": "60000", "json_file_path": "/usr/src/app/MQTT/" }
     ],
     "MQTT_flows": [
         { "enabled": "false", "broker_ip_port": "502", "broker_ip_address": "localhost", "subscription_topic": "de/DAB_0001/@DATA", "delay_ms": "6000", "direction": "out", "msg_file_path": "/usr/src/app/MQTT/" },

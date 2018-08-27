@@ -9,38 +9,29 @@
         }
     ],
     "channels": [
-        { "enabled": "false", "channel_type": "sense_hat", "send": "false", "channel_id": "TMP_0001", "name": "temperature", "channel": "1", "source_channel": "1", "port" : "NONE", "baudrate" : "0", "parity" : "None", "bytesize" : "0", "stopbits" : "0", "delay_ms": "500", "upper_limit": "40", "lower_limit": "-10" },
-        { "enabled": "false", "channel_type": "sense_hat", "send": "false", "channel_id": "PRS_0001", "name": "pressure", "channel": "2", "source_channel": "2", "port" : "NONE", "baudrate" : "0", "parity" : "None", "bytesize" : "0", "stopbits" : "0", "delay_ms": "1500", "upper_limit": "1200", "lower_limit": "800" },
-        { "enabled": "false", "channel_type": "sense_hat", "send": "false", "channel_id": "HUM_0001", "name": "humidity", "channel": "3", "source_channel": "3", "port" : "NONE", "baudrate" : "0", "parity" : "None", "bytesize" : "0", "stopbits" : "0", "delay_ms": "2000", "upper_limit": "1200", "lower_limit": "800" },
-        { "enabled": "true", "channel_type": "average", "send": "true", "channel_id": "TMP_AVG_0001", "name": "temp. min. avg", "channel": "4", "source_channel": "1", "port" : "NONE", "baudrate" : "0", "parity" : "None", "bytesize" : "0", "stopbits" : "0", "delay_ms": "60000", "upper_limit": "40", "lower_limit": "-10" },
-        { "enabled": "true", "channel_type": "average", "send": "true", "channel_id": "PRS_AVG_0001", "name": "prs. min. avg", "channel": "5", "source_channel": "2", "port" : "NONE", "baudrate" : "0", "parity" : "None", "bytesize" : "0", "stopbits" : "0", "delay_ms": "60000", "upper_limit": "1200", "lower_limit": "800" },
-        { "enabled": "true", "channel_type": "average", "send": "true", "channel_id": "HUM_AVG_0001", "name": "hum. min. avg", "channel": "6", "source_channel": "3", "port" : "NONE", "baudrate" : "0", "parity" : "None", "bytesize" : "0", "stopbits" : "0", "delay_ms": "60000", "upper_limit": "1200", "lower_limit": "800" },
-        { "enabled": "true", "channel_type": "seneca", "send": "true", "channel_id": "SC_0001", "name": "seneca1", "channel": "7", "source_channel": "3", "addr" : "1", "port" : "/dev/ttyUSB1", "baudrate" : "57600", "parity" : "None", "bytesize" : "8", "stopbits" : "1", "delay_ms": "60000", "upper_limit": "-50", "lower_limit": "150" },
-        { "enabled": "true", "channel_type": "seneca", "send": "true", "channel_id": "SC_0002", "name": "seneca2", "channel": "8", "source_channel": "4", "addr" : "1", "port" : "/dev/ttyUSB1", "baudrate" : "57600", "parity" : "None", "bytesize" : "8", "stopbits" : "1", "delay_ms": "60000", "upper_limit": "-50", "lower_limit": "150" },
-        { "enabled": "true", "channel_type": "seneca", "send": "true", "channel_id": "SC_0003", "name": "seneca3", "channel": "9", "source_channel": "5", "addr" : "1", "port" : "/dev/ttyUSB1", "baudrate" : "57600", "parity" : "None", "bytesize" : "8", "stopbits" : "1", "delay_ms": "60000", "upper_limit": "-50", "lower_limit": "150" },
-        { "enabled": "true", "channel_type": "seneca", "send": "true", "channel_id": "SC_0004", "name": "seneca4", "channel": "10", "source_channel": "6", "addr" : "1", "port" : "/dev/ttyUSB1", "baudrate" : "57600", "parity" : "None", "bytesize" : "8", "stopbits" : "1", "delay_ms": "60000", "upper_limit": "-50", "lower_limit": "150" },
-        { "enabled": "true", "channel_type": "seneca", "send": "true", "channel_id": "SC_0005", "name": "seneca5", "channel": "11", "source_channel": "7", "addr" : "1", "port" : "/dev/ttyUSB1", "baudrate" : "57600", "parity" : "None", "bytesize" : "8", "stopbits" : "1", "delay_ms": "60000", "upper_limit": "-50", "lower_limit": "150" },
-        { "enabled": "true", "channel_type": "seneca", "send": "true", "channel_id": "SC_0006", "name": "seneca6", "channel": "12", "source_channel": "8", "addr" : "1", "port" : "/dev/ttyUSB1", "baudrate" : "57600", "parity" : "None", "bytesize" : "8", "stopbits" : "1", "delay_ms": "60000", "upper_limit": "-50", "lower_limit": "150" },
-        { "enabled": "true", "channel_type": "seneca", "send": "true", "channel_id": "SC_0007", "name": "seneca7", "channel": "13", "source_channel": "9", "addr" : "1", "port" : "/dev/ttyUSB1", "baudrate" : "57600", "parity" : "None", "bytesize" : "8", "stopbits" : "1", "delay_ms": "60000", "upper_limit": "-50", "lower_limit": "150" },
-        { "enabled": "true", "channel_type": "seneca", "send": "true", "channel_id": "SC_0008", "name": "seneca8", "channel": "14", "source_channel": "10", "addr" : "1", "port" : "/dev/ttyUSB1", "baudrate" : "57600", "parity" : "NONE", "bytesize" : "8", "stopbits" : "1", "delay_ms": "60000", "upper_limit": "-50", "lower_limit": "150" }
+        { "enabled": "true", "channel_type": "sense_hat", "send": "false", "channel_id": "TMP_0001", "name": "temperature", "channel": "1", "source_channel": "1", "port_idx": "-1", "delay_ms": "500", "upper_limit": "40", "lower_limit": "-10" },
+        { "enabled": "true", "channel_type": "sense_hat", "send": "false", "channel_id": "PRS_0001", "name": "pressure", "channel": "2", "source_channel": "2", "port_idx": "-1", "delay_ms": "1500", "upper_limit": "1200", "lower_limit": "800" },
+        { "enabled": "true", "channel_type": "sense_hat", "send": "false", "channel_id": "HUM_0001", "name": "humidity", "channel": "3", "source_channel": "3", "port_idx": "-1", "delay_ms": "2000", "upper_limit": "1200", "lower_limit": "800" },
+        { "enabled": "true", "channel_type": "average", "send": "true", "channel_id": "TMP_AVG_0001", "name": "temp. 10. avg", "channel": "4", "source_channel": "1", "port_idx": "-1", "delay_ms": "10000", "upper_limit": "40", "lower_limit": "-10" },
+        { "enabled": "true", "channel_type": "average", "send": "true", "channel_id": "PRS_AVG_0001", "name": "prs. 10. avg", "channel": "5", "source_channel": "2", "port_idx": "-1", "delay_ms": "10000", "upper_limit": "1200", "lower_limit": "800" },
+        { "enabled": "true", "channel_type": "average", "send": "true", "channel_id": "HUM_AVG_0001", "name": "hum. 10. avg", "channel": "6", "source_channel": "3", "port_idx": "-1", "delay_ms": "10000", "upper_limit": "1200", "lower_limit": "800" },
+        { "enabled": "false", "channel_type": "seneca", "send": "true", "channel_id": "SC_0001", "name": "seneca1", "channel": "7", "source_channel": "3", "port_idx": "1", "delay_ms": "60000", "upper_limit": "-50", "lower_limit": "150" },
+        { "enabled": "false", "channel_type": "seneca", "send": "true", "channel_id": "SC_0002", "name": "seneca2", "channel": "8", "source_channel": "4", "port_idx": "1", "delay_ms": "60000", "upper_limit": "-50", "lower_limit": "150" },
+        { "enabled": "false", "channel_type": "seneca", "send": "true", "channel_id": "SC_0003", "name": "seneca3", "channel": "9", "source_channel": "5", "port_idx": "1", "delay_ms": "60000", "upper_limit": "-50", "lower_limit": "150" },
+        { "enabled": "false", "channel_type": "seneca", "send": "true", "channel_id": "SC_0004", "name": "seneca4", "channel": "10", "source_channel": "6", "port_idx": "1", "delay_ms": "60000", "upper_limit": "-50", "lower_limit": "150" },
+        { "enabled": "false", "channel_type": "seneca", "send": "true", "channel_id": "SC_0005", "name": "seneca5", "channel": "11", "source_channel": "7", "port_idx": "1", "delay_ms": "60000", "upper_limit": "-50", "lower_limit": "150" },
+        { "enabled": "false", "channel_type": "seneca", "send": "true", "channel_id": "SC_0006", "name": "seneca6", "channel": "12", "source_channel": "8", "port_idx": "1", "delay_ms": "60000", "upper_limit": "-50", "lower_limit": "150" },
+        { "enabled": "false", "channel_type": "seneca", "send": "true", "channel_id": "SC_0007", "name": "seneca7", "channel": "13", "source_channel": "9", "port_idx": "1", "delay_ms": "60000", "upper_limit": "-50", "lower_limit": "150" },
+        { "enabled": "false", "channel_type": "seneca", "send": "true", "channel_id": "SC_0008", "name": "seneca8", "channel": "14", "source_channel": "10", "port_idx": "1", "delay_ms": "60000", "upper_limit": "-50", "lower_limit": "150" }
     ],
-    "JSON_collections": [
-        { "enabled": "true", "file_topic": "jsonTMP_AVG_0001", "channel": "4", "delay_ms": "60000", "json_file_path": "/usr/src/app/MQTT/" },
-        { "enabled": "true", "file_topic": "jsonPRS_AVG_0001", "channel": "5", "delay_ms": "60000", "json_file_path": "/usr/src/app/MQTT/" },
-        { "enabled": "true", "file_topic": "jsonHUM_AVG_0001", "channel": "6", "delay_ms": "60000", "json_file_path": "/usr/src/app/MQTT/" },
-        { "enabled": "true", "file_topic": "jsonTMP_0001", "channel": "7", "delay_ms": "60000", "json_file_path": "/usr/src/app/MQTT/" },
-        { "enabled": "true", "file_topic": "jsonTMP_0002", "channel": "8", "delay_ms": "60000", "json_file_path": "/usr/src/app/MQTT/" },
-        { "enabled": "true", "file_topic": "jsonTMP_0003", "channel": "9", "delay_ms": "60000", "json_file_path": "/usr/src/app/MQTT/" },
-        { "enabled": "true", "file_topic": "jsonTMP_0004", "channel": "10", "delay_ms": "60000", "json_file_path": "/usr/src/app/MQTT/" },
-        { "enabled": "true", "file_topic": "jsonTMP_0005", "channel": "11", "delay_ms": "60000", "json_file_path": "/usr/src/app/MQTT/" },
-        { "enabled": "true", "file_topic": "jsonTMP_0006", "channel": "12", "delay_ms": "60000", "json_file_path": "/usr/src/app/MQTT/" },
-        { "enabled": "true", "file_topic": "jsonTMP_0007", "channel": "13", "delay_ms": "60000", "json_file_path": "/usr/src/app/MQTT/" },
-        { "enabled": "true", "file_topic": "jsonTMP_0008", "channel": "14", "delay_ms": "60000", "json_file_path": "/usr/src/app/MQTT/" }
+    "serial_ports": [
+        { "enabled": "false", "idx": "0", "addr": "0", "name": "dummy_port", "baudrate": "0", "parity": "NONE", "bytesize": "0", "stopbits": "0" },
+        { "enabled": "true", "idx": "1", "addr": "1", "name": "/dev/ttyUSB0", "baudrate": "57600", "parity": "NONE", "bytesize": "8", "stopbits": "1" }
     ],
     "MQTT_flows": [
-        { "enabled": "false", "broker_ip_port": "502", "broker_ip_address": "localhost", "subscription_topic": "de/DAB_0001/@DATA", "delay_ms": "6000", "direction": "out", "msg_file_path": "/usr/src/app/MQTT/" },
-        { "enabled": "false", "broker_ip_port": "502", "broker_ip_address": "localhost", "subscription_topic": "de/DAB_0001/@COLLECTION", "delay_ms": "60000", "direction": "out", "msg_file_path": "/usr/src/app/MQTT/" },
-        { "enabled": "false", "broker_ip_port": "502", "broker_ip_address": "localhost", "subscription_topic": "de/DAB_0001/@DATA", "delay_ms": "60000", "direction": "in", "msg_file_path": "/usr/src/app/MQTT/" }
+        { "enabled": "true", "broker_ip_port": "502", "broker_ip_address": "127.0.0.1", "subscription_topic": "de/DAB_0001/@DATA", "delay_ms": "6000", "direction": "out", "json_file_path": "/usr/src/app/MQTT/" },
+        { "enabled": "false", "broker_ip_port": "502", "broker_ip_address": "127.0.0.1", "subscription_topic": "de/DAB_0001/@diagn", "delay_ms": "60000", "direction": "out", "json_file_path": "/usr/src/app/MQTT/" },
+        { "enabled": "false", "broker_ip_port": "502", "broker_ip_address": "localhost", "subscription_topic": "de/DAB_0001/@DATA", "delay_ms": "60000", "direction": "in", "json_file_path": "/usr/src/app/MQTT/" }
     ],
     "MQTT_keys": [
         {
@@ -57,18 +48,10 @@
     "MQTT_channel_qos": [
         { "1": "DIAGN_STATUS_ONLINE", "0": "DIAGN_STATUS_OFFLINE", "-1": "DIAGN_STATUS_ONLINE_ANOMALY" }
     ],
-    "MQTT_diagnostic": [
-        { 
-        "address": "address",
-        "qos": "qos",
-        "payload": "payload",
-        "timestamp": "timestampDevice"
-        }
-    ],
     "log": [
         { 
         "backup_log_path": "/usr/src/app/log/backup_log_%Y%m%d-%H%M%S.log",
-        "log_level": "2"
+        "log_level": "3"
         }
     ],
     "ntp_service": [

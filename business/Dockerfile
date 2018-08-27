@@ -1,14 +1,11 @@
 FROM resin/raspberry-pi3-debian:jessie
 
 RUN apt-get update && apt-get install -yq \
-   python3 python sense-hat raspberrypi-bootloader openssh-server dbus python-pip python3-pip ntp ntpdate && \
+   python3 python sense-hat raspberrypi-bootloader openssh-server dbus python-pip python3-pip apt-utils && \
    pip install MinimalModbus && \
-   #pip3 install MinimalModbus && \
    pip install modbus_tk && \
    pip install paho-mqtt && \
-   #pip3 install paho-mqtt && \
    pip install ntplib && \
-   #pip3 install ntplib && \
    apt-get upgrade && \
    apt-get clean && rm -rf /var/lib/apt/lists/*
 
@@ -26,10 +23,5 @@ ENV INITSYSTEM on
 CMD ["./src/start.sh"]
 
 
-#RUN apt-get update && apt-get install -yq \
-#   python3 python sense-hat raspberrypi-bootloader python-pip python3-pip && \
-#   pip install MinimalModbus && \
-#   pip install modbus_tk && \
-#   pip install paho-mqtt && \
-#   apt-get upgrade && \
-#   apt-get clean && rm -rf /var/lib/apt/lists/*
+
+

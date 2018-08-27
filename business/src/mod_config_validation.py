@@ -1,5 +1,6 @@
 import mod_log
 import os
+import mod_measure_list
 
 class ConfigurationException(Exception):
     ''' Exception for configuration error '''
@@ -10,13 +11,14 @@ class ConfigValidation():
     def __init__(self, log_mgr):
 
         self.log_mgr = log_mgr
+        self.qos = mod_measure_list.QOS()
 
         self.config_keys = { \
         "config_update": { \
             "enabled": "boolean", \
             "delay_ms": "number", \
             "commands_path": "path", \
-            "action": "string" }, \
+            "action": "string" },
         "device": { \
             "device_name": "string", \
             "device_ip": "ip_address" },
@@ -28,9 +30,19 @@ class ConfigValidation():
             "name": "string", \
             "channel": "number", \
             "source_channel": "number", \
+            "port_idx": "number", \
             "delay_ms": "number", \
             "upper_limit": "number", \
             "lower_limit": "number" },
+        "serial_ports": { \
+            "enabled": "boolean", \
+            "idx": "number", \
+            "addr": "number", \
+            "name": "string", \
+            "baudrate": "number", \
+            "parity": "string", \
+            "bytesize": "number", \
+            "stopbits": "number" },
         "MQTT_flows": { \
             "enabled": "boolean", \
             "broker_ip_port": "number", \
@@ -38,13 +50,20 @@ class ConfigValidation():
             "subscription_topic": "string", \
             "delay_ms": "number", \
             "direction": "string", \
-            "msg_file_path": "path" },
+            "json_file_path": "path" },
         "MQTT_keys": { \
             "payload": "string", \
             "address": "string", \
             "qos": "string", \
             "values": "string", \
-            "timestamp": "string" }, \
+            "timestamp": "string" },
+        "MQTT_measure_qos": { \
+            str(self.qos.ANOMALY): "string", \
+            str(self.qos.ONLINE): "string" },
+        "MQTT_channel_qos": { \
+            str(self.qos.OFFLINE): "string", \
+            str(self.qos.ONLINE): "string", \
+            str(self.qos.ANOMALY): "string" },
         "log": { \
             "backup_log_path": "path", \
             "log_level": "number" }, \
@@ -63,7 +82,7 @@ class ConfigValidation():
     # Validate single key
     def validate_key(self, key_name, param_value, param_type):
 
-        self.log_mgr.info(self.__class__.__name__, "Validating key:<" + str(key_name) + ">", 3)
+        self.log_mgr.info(self.__class__.__name__, "Validating key:<" + str(key_name) + ">; value:<" + str(param_value) + ">", 3)
 
         result = False
         if (param_type == "boolean"):
@@ -89,12 +108,18 @@ class ConfigValidation():
     # Validate single dictionary
     def validate_dict(self, dict_name, test_dict):
 
-        self.log_mgr.info(self.__class__.__name__, "Validating dict:<" + str(dict_name) + ">", 2)
+        self.log_mgr.info(self.__class__.__name__, "Validating dict:<" + str(dict_name) + ">", 3)
 
+        # Get list of valid keys
         self.ck = self.get_keys(dict_name)
         if (self.ck is None):
             raise ConfigurationException("Function Error - " \
                                         "missing dict:<"+ str(dict_name) +">")
+
+        # Check if test configuration includes unknown keys
+        for c_key in test_dict.keys():
+            if (self.ck.has_key(c_key) == False):
+                raise ConfigurationException("Configuration Error - unknown key:<"+ str(c_key) +">")
 
         # Iterate over dictionary configuration keys
         for c_key in self.ck.iterkeys():
@@ -120,6 +145,7 @@ class ConfigValidation():
         if (isinstance(test_config, dict) == False):
             raise ConfigurationException("Configuration Error - configuration must be a dictionary")
 
+        # Check if all keys in configuration files are valid
         for c_dict in self.config_keys.keys():
             if (test_config.has_key(c_dict) == False):
                 raise ConfigurationException("Configuration Error - missing dict:<"+ str(c_dict) +">")
@@ -138,6 +164,12 @@ class ConfigValidation():
                     self.validate_dict(c_dict, dic)
                 except ConfigurationException as ce:
                     raise ce
+
+        # Check if configuration file includes unknown dict lists
+        for c_dict in test_config.keys():
+            if (self.config_keys.has_key(c_dict) == False):
+                raise ConfigurationException("Configuration Error - unknown dict:<"+ str(c_dict) +">")
+
 
     def close(self):
         self.log_mgr = None

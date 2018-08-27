@@ -9,11 +9,11 @@ import threading
 
 # Threads management class
 class MqttSend(object):
-    def __init__(self,delay,log_mgr,topic,ip_add,file_msg):
+    def __init__(self, delay, log_mgr, topic, ip_add, json_folder):
         self.log_mgr = log_mgr
         self.topic = topic
         self.ip_add = ip_add
-        self.file_msg = file_msg
+        self.json_folder = json_folder
         self.f_send_msg = None
 
         self.exit_flag = False              # Flag for terminating thread
@@ -22,20 +22,20 @@ class MqttSend(object):
         self.client = mqtt.Client("P1")
         pass
     
-    def send_msg(self):
-        self.log_mgr.info(self.__class__.__name__, "MQTT snd sending <" + self.file_msg + "> to <" + self.ip_add + ">", 3)
+    def send_msg(self, json_file):
+        self.log_mgr.info(self.__class__.__name__, "MQTT snd sending message to <" + self.ip_add + ">", 3)
         try:
             #open loop for sending message
             self.client.loop_start()
             #send json message
-            self.client.publish(self.topic, payload=json.dumps(self.f_send_msg), qos=2, retain=False)
-            #close loop for sending message
+            self.client.publish(self.topic, payload=json_file, qos=2, retain=False)
+            #close loop for sending message                        ^ che e' 2???
             self.client.loop_stop()
             return True
             
         except:
             self.log_mgr.info(self.__class__.__name__, "MQTT snd ERROR sending <" + self.f_send_msg + "> to <" + self.ip_add + "> " + str(sys.exc_info()[0]), 1)
-            raise
+            return False
         
     def connect(self):
         self.log_mgr.info(self.__class__.__name__, "MQTT snd connecting to <" + self.ip_add + ">", 1)
@@ -64,12 +64,19 @@ class MqttSend(object):
         self.exit_flag = True
 
     def manage_message(self):
-        # [TODO] : potrei avere una lista di file JSON ...
-        if (os.path.exists(self.file_msg)):
-            with open(self.file_msg) as data_file:
-                self.f_send_msg = json.load(data_file)
-                self.connect()
-                self.send_msg()
+        # Ho una lista di file JSON ...
+        if (os.path.exists(self.json_folder) == False):
+            self.log_mgr.info(self.__class__.__name__, "MQTT file path not existing <" + self.json_folder + "> " + sys.exc_info()[0], 1)
+
+        # Per ciascuno, tento l'invio. Se OK lo cancello!
+        for file_name in os.listdir(self.json_folder):
+            if file_name.endswith(".json"):
+                file_full_path = str(self.json_folder) + "/" + str(file_name)
+                self.log_mgr.info(self.__class__.__name__, "Sending file <" + file_full_path + ">", 3)
+                if (self.send_msg(file_full_path)):
+                    os.remove(file_full_path)
+                else:
+                    self.log_mgr.info(self.__class__.__name__, "Error sending file <" + file_full_path + ">", 3)
 
     # # Start thread definition
     # def MqttSend_thread(self):

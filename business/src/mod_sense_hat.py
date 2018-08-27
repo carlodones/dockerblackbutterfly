@@ -42,13 +42,15 @@ x = 0
 y = 0
 
 class SenseManager(object):
-    def __init__(self, log_mgr, channel):
+    def __init__(self, log_mgr, channel, send):
 
         self.log_mgr = log_mgr
         self.channel = channel
         self.sense = SenseHat()
         self.turn_off_display()
         self.name = "sense_hat"
+        self.qos = mod_measure_list.QOS()
+        self.send = send
 
         self.log_mgr.info(self.__class__.__name__, "SenseManager initialized", 2)
 
@@ -56,21 +58,28 @@ class SenseManager(object):
     def read_channel(self):
 
         val = None
+        qos = None
 
         # Get timestamp
         ts = time.time()
         
-        # Acquiring from SenseHat sensors: Temperature, Pressure, Humidity
-        if(self.channel == 1):
-            val = float(self.sense.get_temperature())
-        elif(self.channel == 2):
-            val = float(self.sense.get_pressure())
-        else:
-            val = float(self.sense.get_humidity())
+        try: # Acquiring from SenseHat sensors: Temperature, Pressure, Humidity
 
-        self.light_up_pixel()
+            if(self.channel == 1):
+                val = float(self.sense.get_temperature())
+            elif(self.channel == 2):
+                val = float(self.sense.get_pressure())
+            else:
+                val = float(self.sense.get_humidity())
+            
+            qos = self.qos.ONLINE
+            self.light_up_pixel()
 
-        meas_sh = mod_measure_list.Measure(self.channel, val, ts)
+        except:
+            qos = self.qos.ANOMALY
+            self.log_mgr.fatal("Error processing channel:<" + str(self.channel) + ">", 3)
+
+        meas_sh = mod_measure_list.Measure(self.channel, val, ts, qos, self.send)
 
         return meas_sh
 
@@ -79,8 +88,12 @@ class SenseManager(object):
 
     def close(self):
         self.log_mgr.info(self.__class__.__name__, "SenseManager closed", 2)
-        self.turn_off_display()
-        self.sense.clear()
+        try:
+            self.turn_off_display()
+            self.sense.clear()
+            self.sense = None
+        except:
+            self.log_mgr.fatal("Error closing sense_hat", 1)
         self.channel = None
 
 # ------------------------------------------------------------------------------------------------
@@ -101,11 +114,11 @@ class SenseManager(object):
         pix = []
 
         if(self.channel == 1):
-            meas_color = [255, 0, 0]
+            meas_color = [127, 0, 0]
         elif(self.channel == 2):
-            meas_color = [0, 255, 0]
+            meas_color = [0, 127, 0]
         else:
-            meas_color = [0, 0, 255]
+            meas_color = [0, 0, 127]
 
         pix = self.next_pixel()
         self.sense.set_pixel(pix[0], pix[1], meas_color)

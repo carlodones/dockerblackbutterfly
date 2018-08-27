@@ -44,8 +44,8 @@ class MqttReceive(object):
             self.client.on_connect = self.on_connect
             return True
             
-        except:
-            self.log_mgr.info(self.__class__.__name__, "MQTT rcv ERROR connecting to <" + self.ip_add + "> " + str(sys.exc_info()[0]), 2)
+        except Exception as exc:
+            self.log_mgr.info(self.__class__.__name__, "MQTT rcv ERROR connecting to <" + self.ip_add + ">; exception:<" + str(exc) + ">; exc_info:<" + str(sys.exc_info()[0]) +">", 2)
     
     def disconnect(self):
         self.log_mgr.info(self.__class__.__name__, "MQTT rcv disconnecting", 1)
@@ -66,8 +66,8 @@ class MqttReceive(object):
             self.connect()
             self.client.on_message = self.on_message
             self.client.loop_read()
-        except:
-            self.log_mgr.info(self.__class__.__name__, "MQTT rcv ERROR connecting to " + str(sys.exc_info()[0]), 2)
+        except Exception as exc:
+            self.log_mgr.info(self.__class__.__name__, "MQTT rcv ERROR; exception:<" + str(exc) + ">; exc_info:<" + str(sys.exc_info()[0]) +">", 2)
             raise
 
     # # Start thread definition

@@ -19,6 +19,7 @@ class ThreadManager(object):
 
         self.exit_flag = False              # Thread termination flag
         self.stopped_flag = False           # Thread stopped flag
+        self.qos = mod_measure_list.QOS()   # QOS constants
 
         self.exit_check_delay = 5           # Check thread exit each 5 seconds
         self.exit_check_count = 1
@@ -45,7 +46,7 @@ class ThreadManager(object):
         self.log_mgr.info(self.__class__.__name__, "Initialized thread type:<" + str(self.thread_type) + ">; <" + str(thread_id) + ">", 1)
 
     # Set values for acquisition thread params
-    def acq_thread_params(self, channel, delay, source_mgr, measure_list):
+    def acq_thread_params(self, channel, delay, source_mgr, measure_list, chsts_list):
 
         self.thread_id = str(source_mgr.get_name()) + "-" + str(channel)
         self.thread_start_config("ACQ", self.thread_id)
@@ -54,6 +55,7 @@ class ThreadManager(object):
         self.delay = delay                  # Sampling time (sec.)
         self.source_mgr = source_mgr        # source_mgr: board (sense_hat, seneca) / calc (average, etc.)
         self.measure_list = measure_list    # Measure internal list
+        self.chsts_list = chsts_list        # Channel status list
 
         self.thread_end_config(self.thread_id)
 
@@ -137,7 +139,9 @@ class ThreadManager(object):
                 elif (self.thread_type == "CFG"):
                     self.mod_cfg.load_config()
                 elif (self.thread_type == "ACQ"):
-                    self.measure_list.add_measure(self.source_mgr.read_channel())
+                    meas = self.source_mgr.read_channel()
+                    self.measure_list.add_measure(meas)
+                    self.chsts_list.upd_channel_status(meas)
                 elif (self.thread_type == "JSON"):
                     self.json_manager.create_collection()
                 elif (self.thread_type == "NTP"):
@@ -150,11 +154,15 @@ class ThreadManager(object):
             else:
                 time.sleep(self.delay)
 
+        # Update channel status: set OFFLINE status
+        self.chsts_list.add_details(self.channel, self.qos.OFFLINE, time.time())
+
         self.log_mgr.info(self.__class__.__name__, "Stopped thread type:<" + str(self.thread_type) + ">; id:<" + str(self.thread_id) + ">", 1)
         self.stopped_flag = True
 
     # Stop thread
     def stop_thread (self):
+        # Stop thread and log exit
         self.log_mgr.info(self.__class__.__name__, "Stopping thread type:<" + str(self.thread_type) + ">; id:<" + str(self.thread_id) + ">", 1)
         self.exit_flag = True
 

@@ -62,7 +62,7 @@ class ConfigManager(object):
             self.log_mgr.info(self.__class__.__name__, "Configuration validated", 1)
 
         except Exception as exc: # Validation error
-            self.log_mgr.fatal(self.__class__.__name__, "Configuration load error:<" + str(sys.exc_info()[0]) + ">", 1)
+            self.log_mgr.fatal(self.__class__.__name__, "Configuration load exception:<" + str(exc) + ">; exc_info:<" + str(sys.exc_info()[0]) + ">", 1)
             return False if self.config is None else True
 
         # If confguration is empty, ok
@@ -211,6 +211,38 @@ class ConfigManager(object):
                 "configuration " + str(config_key)+ " list is empty!")
 
         return elem_list
+    
+    def get_config_item_dict(self, config_key, idx):
+        if (self.config.has_key(config_key) == False):
+        #if config_key in self.config == False:
+            raise mod_config_validation.ConfigurationException( \
+                "Configuration Error - " + \
+                "missing key:<"+ str(config_key) +">")
+
+        # Each dict key refers to a dict list
+        elem_list = self.config.get(config_key)
+    
+        if (isinstance(elem_list, list) == False):
+            raise mod_config_validation.ConfigurationException( \
+                "Configuration Error - " + \
+                "configuration <"+ str(config_key) +"> is not a lists")
+
+        if (elem_list is None):
+            raise mod_config_validation.ConfigurationException( \
+                "Configuration Error - " + \
+                "configuration " + str(config_key)+ " list is null!")
+
+        if (len(elem_list) <= idx):
+            raise mod_config_validation.ConfigurationException( \
+                "Configuration Error - " + \
+                "configuration " + str(config_key)+ " list has <" + str(len(elem_list)) + "> items!")
+
+        if (isinstance(elem_list[idx], dict) == False):
+            raise mod_config_validation.ConfigurationException( \
+                "Configuration Error - " + \
+                "configuration <"+ str(config_key) +"> first item is not a dict!")
+
+        return elem_list[idx]
 
     def get_MQTT_keys_dict(self):
         MQTT_keys = self.config.get("MQTT_keys", None)

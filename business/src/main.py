@@ -14,9 +14,7 @@ import mod_mqtt_snd
 import mod_sense_hat
 import mod_average
 import mod_seneca
-import serial
-
-from serial.serialutil import *
+import mod_serial
 
 class ServiceClass(object):
     def __init__(self, evn_stop, evn_restart):
@@ -27,12 +25,13 @@ class ServiceClass(object):
         self.thread_list = []
         self.channels = []
 
-        # Istanzio il log manager
+        # Instantiate log manager
         self.log_mgr = mod_log.LogManager()
         self.log_mgr.info(self.__class__.__name__, "Initialization", 1)
 
-        # Istanzio la lista misure
+        # Instantiate measure and channel status lists
         self.measure_list = mod_measure_list.MeasureList()
+        self.chstst_list = mod_measure_list.ChannelStatusList()
 
         # Leggo la configurazione
         self.cfg_mgr = mod_config.ConfigManager(self.log_mgr)
@@ -40,12 +39,15 @@ class ServiceClass(object):
             exit(0)
 
         self.config_update = self.cfg_mgr.get_config_item_list("config_update")
+        self.serial_ports = self.cfg_mgr.get_config_item_list("serial_ports")
         self.channels = self.cfg_mgr.get_config_item_list("channels")
         self.MQTT_flows = self.cfg_mgr.get_config_item_list("MQTT_flows")
-        self.JSON_collections = self.cfg_mgr.get_config_item_list("JSON_collections")
         self.ntp_service = self.cfg_mgr.get_config_item_list("ntp_service")
         self.commands = self.cfg_mgr.get_config_item_list("commands")
         self.log = self.cfg_mgr.get_config_item_list("log")
+
+        # Initialize serial ports dictionary
+        self.serial_manager = mod_serial.SerialManager(self.log_mgr)
 
         for lg in self.log:
             backup_log_path = lg.get("backup_log_path")
@@ -58,6 +60,38 @@ class ServiceClass(object):
         mqtt_mgr = None
         thd_mgr = None
 
+        self.log_mgr.info(self.__class__.__name__, "Setting-up serial ports", 1)
+
+        for sp in self.serial_ports:
+
+            enabled = True if (sp.get("enabled") == "true") else False
+            if (enabled == False):
+                continue
+
+            port_idx = sp.get("idx")
+            port_name = sp.get("name")
+            modbus_addr = sp.get("addr")
+            baudrate_set = sp.get("baudrate")                        
+            bytesize_set = sp.get("bytesize")
+            parity_set = sp.get("parity")
+            stopbits_set = sp.get("stopbits")
+
+            self.log_mgr.info(self.__class__.__name__, \
+                "Serial Port definition - " + \
+                "port_idx:<" + str(port_idx) + ">; " + \
+                "port_name:<" + str(port_name) + ">; " + \
+                "modbus_addr:<" + str(modbus_addr) + ">; " + \
+                "baudrate_set:<" + str(baudrate_set) + ">; " + \
+                "bytesize_set:<" + str(bytesize_set) + ">; " + \
+                "parity_set:<" + str(parity_set) + ">; " + \
+                "stopbits_set:<" + str(stopbits_set) + ">", 1)
+
+            try: # Create serial port manager
+                self.serial_manager.add_instrument(port_idx, port_name, modbus_addr, baudrate_set, parity_set, bytesize_set, stopbits_set)
+            except Exception as exc: # Thread error
+                self.log_mgr.fatal(self.__class__.__name__, "Thread creation exception:<" + str(exc) + ">; exc_info:<" + str(sys.exc_info()[0]) + ">", 1) 
+                continue
+
         self.log_mgr.info(self.__class__.__name__, "Setting-up acquisition threads", 1)
 
         for ch in self.channels:
@@ -66,37 +100,23 @@ class ServiceClass(object):
             if (enabled == False):
                 continue
 
+            send = True if (ch.get("send") == "true") else False
             channel_type = ch.get("channel_type")
             thread_id = ch.get("channel_id")
+            port_idx = int(ch.get("port_idx"))
             channel = int(ch.get("channel"))
             source_channel = int(ch.get("source_channel"))
             delay = float(ch.get("delay_ms")) / 1000
-
-            port_id = ch.get("port")
-            modbus_addr = ch.get("addr")
-            baudrate_set = ch.get("baudrate")
-
-            #
-            # PARITY_NONE: 'None',
-            # PARITY_EVEN: 'Even',
-            # PARITY_ODD: 'Odd',
-            # PARITY_MARK: 'Mark',
-            # PARITY_SPACE: 'Space'
-            #
-            if (ch.get("baudrate") == "None") :
-                parity_set = serial.PARITY_NONE
-            elif (ch.get("baudrate") == "Even") :
-                parity_set = serial.PARITY_EVEN
-            elif (ch.get("baudrate") == "Odd") :
-                parity_set = serial.PARITY_ODD
-            else:
-                parity_set = serial.PARITY_NONE
             
-            bytesize_set = int(ch.get("bytesize"))
-            stopbits_set = int(ch.get("stopbits"))
+            try: # Create serial port manager
+                instrument = self.serial_manager.get_instrument(port_idx)
+            except Exception as exc: # Thread error
+                self.log_mgr.fatal(self.__class__.__name__, "Thread creation exception:<" + str(exc) + ">; exc_info:<" + str(sys.exc_info()[0]) + ">", 1) 
+                continue
 
             self.log_mgr.info(self.__class__.__name__, \
                 "Source definition - " + \
+                "send:<" + str(send) + ">; " + \
                 "thread_id:<" + str(thread_id) + ">; " + \
                 "channel:<" + str(channel) + ">; " + \
                 "channel_type:<" + str(channel_type) + ">; " + \
@@ -105,47 +125,48 @@ class ServiceClass(object):
 
             # Create an instance of the acquisition manager
             if (channel_type == "sense_hat"):
-                source_mgr = mod_sense_hat.SenseManager(self.log_mgr, int(channel))
+                source_mgr = mod_sense_hat.SenseManager(self.log_mgr, channel, send)
             if (channel_type == "average"):
-                source_mgr = mod_average.AverageManager(self.log_mgr, self.measure_list, channel, source_channel)
+                source_mgr = mod_average.AverageManager(self.log_mgr, self.measure_list, channel, source_channel, send)
             if (channel_type == "seneca"):
-                source_mgr = mod_seneca.SenecaManager(self.log_mgr, channel, source_channel, modbus_addr, port_id, baudrate_set, parity_set, bytesize_set, stopbits_set)
+                source_mgr = mod_seneca.SenecaManager(self.log_mgr, channel, source_channel, send, modbus_addr, instrument)
 
             try: # Create an instance of the acquisition management thread
                 thd_mgr = mod_thread.ThreadManager(self.log_mgr, "ACQ")
-                thd_mgr.acq_thread_params(channel, delay, source_mgr, self.measure_list)
+                thd_mgr.acq_thread_params(channel, delay, source_mgr, self.measure_list, self.chstst_list)
                 self.thread_list.append(thd_mgr)
             except Exception as exc: # Thread error
-                self.log_mgr.fatal(self.__class__.__name__, "Thread creation error:<" + str(sys.exc_info()[0]) + ">", 1) 
+                self.log_mgr.fatal(self.__class__.__name__, "Thread creation exception:<" + str(exc) + ">; exc_info:<" + str(sys.exc_info()[0]) + ">", 1) 
                 continue
 
         self.log_mgr.info(self.__class__.__name__, "Setting-up JSON management threads", 1)
 
-        for jc in self.JSON_collections:
+        for jc in self.MQTT_flows:
 
             enabled = True if (jc.get("enabled") == "true") else False
             if (enabled == False):
                 continue
 
-            file_topic = jc.get("file_topic")
+            subscription_topic = jc.get("subscription_topic")
+            direction = jc.get("direction")
             json_file_path = jc.get("json_file_path")
-            channel = int(jc.get("channel"))
             delay = float(jc.get("delay_ms")) / 1000
 
             self.log_mgr.info(self.__class__.__name__, \
-                "JSON collection definition - " + \
+                "JSON flow definition - " + \
+                "subscription_topic:<" + str(subscription_topic) + ">; " + \
+                "direction:<" + str(direction) + ">; " + \
                 "json_file_path:<" + str(json_file_path) + ">; " + \
-                "file_topic:<" + str(file_topic) + ">; " + \
                 "delay:<" + str(delay) + ">")
 
-            json_mgr = mod_json.Collection(self.log_mgr, delay, channel, file_topic, json_file_path)
+            json_mgr = mod_json.Collection(self.log_mgr, self.cfg_mgr, self.measure_list, direction, subscription_topic, json_file_path)
 
             try: # Create an instance of the MQTT management thread
                 thd_mgr = mod_thread.ThreadManager(self.log_mgr, "JSON")
                 thd_mgr.json_thread_params(delay, json_mgr)
                 self.thread_list.append(thd_mgr)
             except Exception as exc: # Thread error
-                self.log_mgr.fatal(self.__class__.__name__, "Thread creation error:<" + str(sys.exc_info()[0]) + ">", 1)
+                self.log_mgr.fatal(self.__class__.__name__, "Thread creation exception:<" + str(exc) + ">; exc_info:<" + str(sys.exc_info()[0]) + ">", 1)
                 continue
 
         self.log_mgr.info(self.__class__.__name__, "Setting-up MQTT management threads", 1)
@@ -158,7 +179,7 @@ class ServiceClass(object):
 
             subscription_topic = fl.get("subscription_topic")
             broker_ip_address = fl.get("broker_ip_address")
-            msg_file_path = fl.get("msg_file_path")
+            json_file_path = fl.get("json_file_path")
             broker_ip_port = int(fl.get("broker_ip_port"))
             direction = fl.get("direction")
             delay = float(fl.get("delay_ms")) / 1000
@@ -166,7 +187,7 @@ class ServiceClass(object):
             self.log_mgr.info(self.__class__.__name__, \
                 "MQTT flow definition - " + \
                 "broker_ip_address:<" + str(broker_ip_address) + ">; " + \
-                "msg_file_path:<" + str(msg_file_path) + ">; " + \
+                "json_file_path:<" + str(json_file_path) + ">; " + \
                 "broker_ip_port:<" + str(broker_ip_port) + ">; " + \
                 "subscription_topic:<" + str(subscription_topic) + ">; " + \
                 "delay:<" + str(delay) + ">; " + \
@@ -174,16 +195,16 @@ class ServiceClass(object):
 
             # Create an instance of the mqtt message manager
             if (direction == "in"):
-                mqtt_mgr = mod_mqtt_rcv.MqttReceive(delay, self.log_mgr, subscription_topic, broker_ip_address, msg_file_path)
+                mqtt_mgr = mod_mqtt_rcv.MqttReceive(delay, self.log_mgr, subscription_topic, broker_ip_address, json_file_path)
             if (direction == "out"):
-                mqtt_mgr = mod_mqtt_snd.MqttSend(delay, self.log_mgr, subscription_topic, broker_ip_address, msg_file_path)
+                mqtt_mgr = mod_mqtt_snd.MqttSend(delay, self.log_mgr, subscription_topic, broker_ip_address, json_file_path)
 
             try: # Create an instance of the MQTT management thread
                 thd_mgr = mod_thread.ThreadManager(self.log_mgr, "MQTT")
                 thd_mgr.mqtt_thread_params(delay, mqtt_mgr)
                 self.thread_list.append(thd_mgr)
             except Exception as exc: # Thread error
-                self.log_mgr.fatal(self.__class__.__name__, "Thread creation error:<" + str(sys.exc_info()[0]) + ">", 1)
+                self.log_mgr.fatal(self.__class__.__name__, "Thread creation exception:<" + str(exc) + ">; exc_info:<" + str(sys.exc_info()[0]) + ">", 1)
                 continue
 
         self.log_mgr.info(self.__class__.__name__, "Setting-up NTP sync management threads", 1)
@@ -210,7 +231,7 @@ class ServiceClass(object):
                 thd_mgr.ntp_thread_params(delay, ntp_mgr)
                 self.thread_list.append(thd_mgr)
             except Exception as exc: # Thread error
-                self.log_mgr.fatal(self.__class__.__name__, "Thread creation error:<" + str(sys.exc_info()[0]) + ">", 1)
+                self.log_mgr.fatal(self.__class__.__name__, "Thread creation exception:<" + str(exc) + ">; exc_info:<" + str(sys.exc_info()[0]) + ">", 1)
                 continue
 
         self.log_mgr.info(self.__class__.__name__, "Setting-up config update management thread", 1)
@@ -238,7 +259,7 @@ class ServiceClass(object):
                 thd_mgr.cfg_thread_params(self.cfg_mgr, delay)
                 self.thread_list.append(thd_mgr)
             except Exception as exc: # Thread error
-                self.log_mgr.fatal(self.__class__.__name__, "Thread creation error:<" + str(sys.exc_info()[0]) + ">", 1)
+                self.log_mgr.fatal(self.__class__.__name__, "Thread creation exception:<" + str(exc) + ">; exc_info:<" + str(sys.exc_info()[0]) + ">", 1)
                 continue
 
     def start_threads(self):

@@ -6,7 +6,7 @@ if [ "$INITSYSTEM" != "on" ]; then
 fi
 
 # Set timezone to Europe/Rome
-timedatectl set-timezone Europe/Rome
+# timedatectl set-timezone Etc/UTC
 
 echo "Starting EnePro ..."
 
